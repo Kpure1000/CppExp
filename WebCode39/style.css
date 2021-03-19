@@ -1,0 +1,29 @@
+.canv {
+    margin: auto;
+    margin-top: 10px;
+    /* width: 1000px;
+    height: 250px; */
+    border: 1px solid #000000;
+}
+
+.chk {
+    display: inline-block;
+    margin: auto;
+    margin-left: 20px;
+}
+
+.inp {
+    margin: auto;
+    margin-top: 10px;
+    padding: 5px;
+    min-width: 300px;
+    min-height: 25px;
+}
+
+.bt {
+    margin: auto;
+    margin-top: 10px;
+    padding: 5px;
+    min-width: 80px;
+    min-height: 25px;
+}

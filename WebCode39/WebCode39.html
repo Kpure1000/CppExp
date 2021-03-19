@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Code 39 - Productor</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <ul style="list-style-type:none;">
+        <li>
+            <input class="inp" type="text" name="codeIn" id="inputer">
+        </li>
+        <li>
+            <button class="bt" onclick="doDraw()">点击生成39码</button>
+            <input class="chk" onchange="doDraw()" type="checkbox" name="" id="checker" checked>
+            <p style="display: inline-block;">是否添加校验位</p>
+        </li>
+        <li>
+            <canvas class="canv" id="canv" width="800px" height="250px"></canvas>
+        </li>
+    </ul>
+    <script src="./DrawCode39.js "></script>
+</body>
+
+</html>

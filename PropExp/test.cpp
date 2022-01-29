@@ -3,68 +3,48 @@
 #include "property.h"
 
 struct A {
-    A() :p(""){
+    A() : p(""), p1("p1"), p2("p2") {
     }
 
-    PROP_WR(std::string, p,
+    std::string getp1() {
+        return p1.p1;
+    }
+
+    PROP_WR(A, std::string, p,
         {
-            std::cout << "Aset\n";
+            std::cout << "p set\n";
+            p += value + value;
         },
         {
-            std::cout << "Aget\n";
-            return value;
+            std::cout << "p get\n";
+            return p;
         }
+    );
+    PROP_W(A, std::string, p1,
+        {
+            std::cout << "p1 set\n";
+            p1 += value + value;
+        }
+    );
+    PROP_R(A, std::string, p2,
+            std::cout << "p2 get\n";
+            return p2 + "+++";
     );
 
 };
-
-
-struct B {
-    B() :p(""){
-    }
-
-    PROP_W(std::string, p,
-        {
-            std::cout << "Bset\n";
-        }
-    );
-
-};
-struct C {
-    C() :p(""), p2(""){
-    }
-
-    PROP_W(std::string, p,
-        {
-            std::cout << "Cset\n";
-        }
-    );
-
-    PROP_R(std::string, p2,
-        {
-            std::cout << "Cget\n";
-            return value;
-        }
-    );
-
-};
-    
 
 int main(int argc, char const *argv[])
 {
-    std::string ss;
     A a;
-    a.p = "asd"; // set
-    std::string s = a.p; // get
-    ss = a.p; // get
+    a.p = "asd"; // p set
+    std::string s = a.p; // p get
+    std::cout << s << std::endl;
 
-    
-    B b;
-    b.p = "asd"; // set
+    a.p1 = a.p2; // p2 get and p1 set
+    std::cout << a.getp1() << std::endl;
 
-    C c;
-    ss = c.p2; // get
-    c.p = "dsa"; // set
+    std::string sp2 = a.p2; // p2 get
+    std::cout << sp2 << std::endl;
 
     return 0;
 }

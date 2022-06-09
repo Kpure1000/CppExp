@@ -11,10 +11,11 @@ struct A {
     }
 
     PROP_WR(A, std::string, p,
-        {
+        ({
             std::cout << "p set\n";
+            int i, j;
             p += value + value;
-        },
+        });,
         {
             std::cout << "p get\n";
             return p;

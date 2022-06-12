@@ -1,46 +1,97 @@
 #include "scene_tree.h"
+#include <iostream>
+#include <stack>
+
+std::ostream& operator<<(std::ostream& os, const GameObject& obj)
+{
+    return os << obj.name;
+}
+
+
+std::ostream& operator<<(std::ostream& os, GameObject&& obj)
+{
+    return os << obj.name;
+}
+
+//////////////////
+/// SceneNode
+//////////////////
 
 void SceneNode::add_child(GameObject *obj)
 {
-    _children.emplace_back(obj, this);
+    _children.emplace_back(new SceneNode{obj, this});
 }
 
-SceneNode::VisitorType SceneNode::childrenVisitor(std::function<VisitorType(SceneNode*)> const& visitor)
+bool SceneNode::childrenVisitor(VisitorFn const& visitor) const 
 {
-    for (auto &&child : this->_children)
+    if (!visitor(const_cast<SceneNode*>(this)))
     {
-        auto visitor_type = visitor(this);
-        if (visitor_type == VisitorType::SceneNode_Break)
-            break;
-        else if (visitor_type == VisitorType::SceneNode_Continue)
-            continue;
-        child->childrenVisitor(visitor);
+        return false;
     }
-    return VisitorType::SceneNode_Break;
+
+    for (int i = 0; i < _children.size(); i++)
+    {
+        if (!_children[i]->childrenVisitor(visitor))
+        {
+            return false;
+        }
+    }
+    return true;
 }
 
-void SceneNode::parentsVisitor(std::function<VisitorType(SceneNode*)> const& visitor)
+void SceneNode::childrenVisitor_it(VisitorFn const& visitor) const 
+{
+    std::stack<const SceneNode*> tree_stack;
+    tree_stack.push(this);
+    while (!tree_stack.empty())
+    {
+        auto top_node = tree_stack.top();
+        tree_stack.pop();
+        if (!visitor(const_cast<SceneNode *>(top_node)))
+        {
+            return;
+        }
+        for (int i = top_node->_children.size() - 1; i >= 0; i--)
+        {
+            tree_stack.push(top_node->_children[i]);
+        }
+    }
+}
+
+void SceneNode::parentsVisitor(VisitorFn const& visitor)
 {
     SceneNode* parent = this->_parent;
     while (!parent)
     {
-        if (visitor(parent) == VisitorType::SceneNode_Break)
+        if (!visitor(parent))
             break;
         parent = parent->_parent;
     }
 }
 
-SceneNode* SceneTree::find(GameObject* target)
+//////////////////
+/// SceneTree
+//////////////////
+
+SceneNode* SceneTree::find(FoundFn const& foundFn)
 {
     SceneNode* ret = nullptr;
     _root->childrenVisitor([&](SceneNode* node)
     {
-        if (node->_obj == target)
+        if (foundFn(node))
         {
             ret = node;
-            return SceneNode::VisitorType::SceneNode_Break;
+            return false;
         }
-        return SceneNode::VisitorType::SceneNode_Recursive;
+        return true;
     });
     return ret;
+}
+
+SceneNode* SceneTree::find(GameObject* target)
+{
+    return find([&target](SceneNode* node)
+    {
+        return node->_obj == target;
+    });
 }

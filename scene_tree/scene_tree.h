@@ -27,6 +27,19 @@ struct SceneNode
     GameObject *_obj;
     std::vector<SceneNode *> _children;
 
+    SceneNode* child(int index)
+    {
+        return _children[index];
+    }
+
+    const SceneNode* child(int index)const
+    {
+        return _children[index];
+    }
+
+    SceneNode* operator[](int index);
+    const SceneNode* operator[](int index) const;
+
     inline bool has_child() const 
     {
         return !_children.empty();
@@ -37,7 +50,11 @@ struct SceneNode
         return _children.size();
     }
 
+    
+
     void add_child(GameObject *obj);
+
+    void removeChildren();
 
     using VisitorFn = std::function<bool(SceneNode *)>;
     /**
@@ -49,6 +66,7 @@ struct SceneNode
      */
     void childrenVisitor_it(VisitorFn const &visitor) const;
     void parentsVisitor(VisitorFn const &visitor);
+
 };
 
 struct SceneTree
@@ -58,6 +76,7 @@ struct SceneTree
     using FoundFn = std::function<bool(SceneNode *target)>;
     SceneNode *find(FoundFn const& foundFn);
     SceneNode *find(GameObject *target);
+    void remove(SceneNode* node);
 
     SceneNode *_root;
 };

@@ -19,12 +19,12 @@ std::ostream& operator<<(std::ostream& os, GameObject&& obj)
 
 SceneNode* SceneNode::operator[](int index)
 {
-    return _children[index];
+    return _children[index].get();
 }
 
 const SceneNode* SceneNode::operator[](int index) const
 {
-    return _children[index];
+    return _children[index].get();
 }
 
 void SceneNode::add_child(GameObject *obj)
@@ -38,8 +38,6 @@ void SceneNode::removeChildren()
     {
         _children[i]->removeChildren();
         _children[i]->_children.clear();
-        delete _children[i];
-        // _children.erase(_children.begin() + i);
     }
 }
 
@@ -74,7 +72,7 @@ void SceneNode::childrenVisitor_it(VisitorFn const& visitor) const
         }
         for (int i = top_node->children_size() - 1; i >= 0; i--)
         {
-            tree_stack.push(top_node->_children[i]);
+            tree_stack.push(top_node->_children[i].get());
         }
     }
 }
@@ -111,8 +109,7 @@ SceneNode* SceneTree::find(FoundFn const& foundFn)
 
 SceneNode* SceneTree::find(GameObject* target)
 {
-    return find([&target](SceneNode* node)
-    {
+    return find([&target](SceneNode* node)    {
         return node->_obj == target;
     });
 }
@@ -121,6 +118,13 @@ void SceneTree::remove(SceneNode* node)
 {
     node->removeChildren();
     node->_children.clear();
-    std::remove(node->_parent->_children.begin(), node->_parent->_children.end(), node);
-    delete node;
+    if (node == _root.get())
+        return;
+    auto parent = node->_parent;
+    parent->_children.erase(std::find_if(parent->_children.begin(), parent->_children.end(),
+        [&](std::shared_ptr<SceneNode> node_s)
+        {
+            return node_s.get() == node;
+        }));
+
 }

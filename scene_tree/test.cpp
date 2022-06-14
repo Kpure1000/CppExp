@@ -6,7 +6,6 @@ int main(int argc, char const *argv[])
 {
     // add
     SceneTree tree;
-    tree._root = new SceneNode(new GameObject("R"), nullptr);
     auto root = tree._root;
     
     root->add_child(new GameObject("R.A"));
@@ -20,6 +19,7 @@ int main(int argc, char const *argv[])
     (*root)[1]->add_child(new GameObject("R.B.B"));
     (*root)[1]->add_child(new GameObject("R.B.C"));
     (*(*root)[1])[2]->add_child(new GameObject("R.B.C.A"));
+    (*(*root)[1])[2]->add_child(new GameObject("R.B.C.B"));
     (*root)[1]->add_child(new GameObject("R.B.D"));
     
     root->add_child(new GameObject("R.C"));

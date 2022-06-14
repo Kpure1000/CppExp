@@ -1,7 +1,9 @@
 .vscode/
 
-.DS_Store\
+.DS_Store/
 
 *.exe
 
 *.pdb
+
+build/

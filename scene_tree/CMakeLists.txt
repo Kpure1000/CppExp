@@ -1,0 +1,13 @@
+cmake_minimum_required(VERSION 3.8)
+
+set(PROJECT_NAME SceneTree)
+
+project(${PROJECT_NAME})
+
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED FALSE)
+
+file(GLOB_RECURSE SOURCES *.cpp)
+file(GLOB_RECURSE HEADERS *.h)
+
+add_executable(${PROJECT_NAME} ${SOURCES} ${HEADERS})

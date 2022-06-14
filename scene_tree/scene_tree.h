@@ -4,6 +4,7 @@
 #include <vector>
 #include <unordered_map>
 #include <functional>
+#include <memory>
 
 struct GameObject
 {
@@ -25,16 +26,16 @@ struct SceneNode
 
     SceneNode *_parent;
     GameObject *_obj;
-    std::vector<SceneNode *> _children;
+    std::vector<std::shared_ptr<SceneNode>> _children;
 
     SceneNode* child(int index)
     {
-        return _children[index];
+        return _children[index].get();
     }
 
     const SceneNode* child(int index)const
     {
-        return _children[index];
+        return _children[index].get();
     }
 
     SceneNode* operator[](int index);
@@ -71,14 +72,14 @@ struct SceneNode
 
 struct SceneTree
 {
-    SceneTree() {}
+    SceneTree() : _root(std::make_shared<SceneNode>(new GameObject("R"), nullptr)) {}
 
     using FoundFn = std::function<bool(SceneNode *target)>;
     SceneNode *find(FoundFn const& foundFn);
     SceneNode *find(GameObject *target);
     void remove(SceneNode* node);
 
-    SceneNode *_root;
+    std::shared_ptr<SceneNode> _root;
 };
 
 #endif

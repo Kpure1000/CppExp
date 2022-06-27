@@ -28,28 +28,59 @@ int main(int argc, char const *argv[])
     (*root)[2]->add_child(new GameObject("R.C.C"));
 
     SceneNode* cur;
+    SceneNode* tar;
 
-    int count = 0;
-    root->childrenVisitor([&](SceneNode *node)
-    {
-        std::cout << *(node->_obj) << std::endl;
-        count++;
-        if (node->_obj->name == "R.B")
+    // std::cout << "test: visitor\n";
+
+    // root->childrenVisitor_it([&](SceneNode *node)
+    // {
+    //     std::cout << *(node->_obj) << std::endl;
+
+    //     if (node->_obj->name == "R.B")
+    //     {
+    //         cur = node;
+    //     }
+    //     if (node->_obj->name == "R.A.B")
+    //     {
+    //         tar = node;
+    //     }
+    //     return true;
+    // });
+
+    std::cout << "test: visitorEx\n";
+
+    int degree = 0;
+
+    root->childrenVisitorEx(
+        [&](SceneNode *node)
         {
-            cur = node;
+            std::cout << *(node->_obj) << ", degree: " << degree << std::endl;
+            if(node->has_child())
+                degree++;
+            return true;
+        },
+        [&](SceneNode *node)
+        {
+            degree--;
+            return true;
         }
-        return true;
-    });
+    );
 
-    std::cout << "nodes count: " << count <<std::endl;
+    // std::cout << "test: move\n";
+    // tree.move(cur, tar);
+    // root->childrenVisitor_it([&](SceneNode *node)
+    // {
+    //     std::cout << *(node->_obj) << std::endl;
+    //     return true;
+    // });
 
-    tree.remove(cur);
-
-    root->childrenVisitor_it([&](SceneNode *node)
-    {
-        std::cout << *(node->_obj) << std::endl;
-        return true;
-    });
+    // std::cout << "\ntest: remove\n";
+    // tree.remove(tar);
+    // root->childrenVisitor_it([&](SceneNode *node)
+    // {
+    //     std::cout << *(node->_obj) << std::endl;
+    //     return true;
+    // });
 
 
     return 0;

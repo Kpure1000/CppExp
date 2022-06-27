@@ -5,6 +5,7 @@
 #include <unordered_map>
 #include <functional>
 #include <memory>
+#include <string>
 
 struct GameObject
 {
@@ -51,9 +52,14 @@ struct SceneNode
         return _children.size();
     }
 
-    
+    /**
+     * get index of child in childrens
+     * @return return -1, unless found out.
+     */
+    int get_child_index(SceneNode* node) const;
 
     void add_child(GameObject *obj);
+    void add_child(GameObject *obj, int index);
 
     void removeChildren();
 
@@ -62,6 +68,8 @@ struct SceneNode
      * recursive visitor
      */
     bool childrenVisitor(VisitorFn const &visitor) const;
+
+    bool childrenVisitorEx(VisitorFn const& preVisitor, VisitorFn const& sufVisitor) const;
     /**
      * iterative visitor
      */
@@ -78,6 +86,8 @@ struct SceneTree
     SceneNode *find(FoundFn const& foundFn);
     SceneNode *find(GameObject *target);
     void remove(SceneNode* node);
+
+    void move(SceneNode* source, SceneNode* target, int child_index = 0);
 
     std::shared_ptr<SceneNode> _root;
 };

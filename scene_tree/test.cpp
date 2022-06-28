@@ -8,24 +8,24 @@ int main(int argc, char const *argv[])
     SceneTree tree;
     auto root = tree._root;
     
-    root->add_child(new GameObject("R.A"));
-    (*root)[0]->add_child(new GameObject("R.A.A"));
-    (*(*root)[0])[0]->add_child(new GameObject("R.A.A.A"));
-    (*root)[0]->add_child(new GameObject("R.A.B"));
-    (*root)[0]->add_child(new GameObject("R.A.C"));
+    root->add_child(new GameObject("A"));
+    (*root)[0]->add_child(new GameObject("A"));
+    (*(*root)[0])[0]->add_child(new GameObject("A"));
+    (*root)[0]->add_child(new GameObject("B"));
+    (*root)[0]->add_child(new GameObject("C"));
 
-    root->add_child(new GameObject("R.B"));
-    (*root)[1]->add_child(new GameObject("R.B.A"));
-    (*root)[1]->add_child(new GameObject("R.B.B"));
-    (*root)[1]->add_child(new GameObject("R.B.C"));
-    (*(*root)[1])[2]->add_child(new GameObject("R.B.C.A"));
-    (*(*root)[1])[2]->add_child(new GameObject("R.B.C.B"));
-    (*root)[1]->add_child(new GameObject("R.B.D"));
+    root->add_child(new GameObject("B"));
+    (*root)[1]->add_child(new GameObject("A"));
+    (*root)[1]->add_child(new GameObject("B"));
+    (*root)[1]->add_child(new GameObject("C"));
+    (*(*root)[1])[2]->add_child(new GameObject("A"));
+    (*(*root)[1])[2]->add_child(new GameObject("B"));
+    (*root)[1]->add_child(new GameObject("D"));
     
-    root->add_child(new GameObject("R.C"));
-    (*root)[2]->add_child(new GameObject("R.C.A"));
-    (*root)[2]->add_child(new GameObject("R.C.B"));
-    (*root)[2]->add_child(new GameObject("R.C.C"));
+    root->add_child(new GameObject("C"));
+    (*root)[2]->add_child(new GameObject("A"));
+    (*root)[2]->add_child(new GameObject("B"));
+    (*root)[2]->add_child(new GameObject("C"));
 
     SceneNode* cur;
     SceneNode* tar;
@@ -54,14 +54,15 @@ int main(int argc, char const *argv[])
     root->childrenVisitorEx(
         [&](SceneNode *node)
         {
-            std::cout << *(node->_obj) << ", degree: " << degree << std::endl;
+            std::cout << std::setw(degree + 1) << std::setfill(' ') << '-' << *(node->_obj) << ", degree: " << degree << std::endl;
             if(node->has_child())
                 degree++;
             return true;
         },
         [&](SceneNode *node)
         {
-            degree--;
+            if(node->has_child())
+                degree--;
             return true;
         }
     );
